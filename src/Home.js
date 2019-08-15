@@ -1,53 +1,30 @@
 import React, { Component } from 'react';
 import {bindActionCreators} from 'redux';
-import { connect } from 'react-redux';
-import {fetchPosts, storePostsAction} from './actions';
-import Axios from 'axios';
+import {connect} from 'react-redux';
+import {Waypoint} from 'react-waypoint';
+
+import {fetchPosts} from './actions';
+import Posts from './components/Posts';
 
 
 class Home extends Component {
-    componentDidMount() {
-        const { posts } = this.props;
+  constructor(props) {
+    super(props);
+  }
 
-        console.log('posts', posts);
-        // called only on client side.
-        // Use this or other logical checks that
-        // tell us if this data has not loaded already
-        if (posts.length === 0) {
-            fetchPosts();
-            // this.getPosts();
-        }
-    }
+  componentDidMount() {
+  }
 
-    render() {
-        const { posts } = this.props;
+  componentWillReceiveProps(nextProps, nextContext) {
+  }
 
-        return (
-            <div>
-                <h2 className="home">Home</h2>
-                {posts.map(p => (
-                    <p key={p.id}>{p.title}</p>
-                ))}
-            </div>
-        )
-    }
-
-    async getPosts() {
-        // If the API call is triggered on the server,
-        // call the API server directly. When triggered from
-        // browser, our proxy in package.json will handle the
-        // request
-        const isServer = typeof window === 'undefined';
-        const url = isServer
-            ? 'http://jsonplaceholder.typicode.com/posts'
-            : 'http://jsonplaceholder.typicode.com/posts';
-
-        console.log(`Getting posts on ${isServer ? 'server' : 'browser'}`);
-
-        // get the data
-        const res = await Axios.get(url);
-        this.props.storePostsAction(res.data);
-    }
+  render() {
+    return (
+      <div>
+        <h2 className="home">Home</h2>
+      </div>
+    )
+  }
 }
 
 // static declaration for SSR
@@ -61,12 +38,11 @@ Home.serverSideFetch = () => {
 
 // map posts from redux store
 const mapStateToProps = state => ({
-    posts: state.posts
+  posts: state.posts.posts,
+  postsTotalCount: state.posts.totalCount
 });
 
 // map api call which can be conditionally triggered
-const mapDispatchToProps = dispatch => bindActionCreators({
-    storePostsAction
-}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

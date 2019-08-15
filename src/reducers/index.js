@@ -1,17 +1,9 @@
 import { combineReducers } from 'redux';
-
-
-const postsReducer = (state = [], action) => {
-    // console.log('here reducer', action);
-    switch (action.type) {
-        case 'STORE_POSTS':
-            return action.posts;
-        default:
-            return state;
-    }
-};
+import { postsReducer } from './postsReducer';
+import { commentsReducer } from './commentsReducer';
 
 export const reducer = combineReducers({
-    // add more as needed
-    posts: postsReducer
+  // add more as needed
+  posts: postsReducer,
+  comments: commentsReducer
 });
