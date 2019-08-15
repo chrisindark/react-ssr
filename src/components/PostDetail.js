@@ -3,12 +3,13 @@ import {withRouter} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import {fetchCommentsByPostId, fetchPost, removeCommentsFromStore} from '../actions';
+import {fetchPost, removePostFromStore} from '../actions/postActions';
+import {fetchCommentsByPostId, removeCommentsFromStore} from '../actions/commentActions';
 
 
 class PostDetail extends Component {
   componentDidMount() {
-    if (this.props.post) {
+    if (this.props.post && this.props.post.id) {
       fetchCommentsByPostId(this.props.post.id)
         .then((res) => {
           console.log(`fetchCommentsByPostId then `, res);
@@ -38,7 +39,7 @@ class PostDetail extends Component {
   componentWillReceiveProps(nextProps, nextContext) {}
 
   render() {
-    if (!this.props.post) {
+    if (!this.props.post || !this.props.post.id) {
       return (
         <div>
           Loading...
@@ -84,6 +85,7 @@ class PostDetail extends Component {
   };
 
   componentWillUnmount() {
+    removePostFromStore();
     removeCommentsFromStore();
   }
 }

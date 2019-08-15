@@ -10,6 +10,6 @@ const INITIAL_REDUX_DATA = (typeof window !== "undefined" && window && window.RE
 
 export default (initialState => createStore(reducer, initialState,
     applyMiddleware(
-        loggerMiddleware // neat middleware that logs actions
+        // loggerMiddleware // neat middleware that logs actions
     )
 ))(INITIAL_REDUX_DATA);

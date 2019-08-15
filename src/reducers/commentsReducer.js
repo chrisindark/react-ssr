@@ -6,8 +6,10 @@ const initialState = {
 export const commentsReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'UPDATE_ALL_COMMENTS':
-      state = Object.assign({}, state, action.payload);
-      return state;
+      const comments = Object.assign({}, state, action.payload);
+      return {
+        ...state, ...comments
+      };
     default:
       return state;
   }

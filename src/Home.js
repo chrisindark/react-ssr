@@ -1,15 +1,21 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Waypoint} from 'react-waypoint';
 
-import {fetchPosts} from './actions';
-import Posts from './components/Posts';
+import {fetchPosts} from './actions/postActions';
+import {fetchAlbums} from './actions/albumActions';
 
 
 class Home extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentWillMount() {
+    // console.log(this.props);
+    if (this.props.location.pathname === '/') {
+      this.props.history.push('/posts');
+    }
   }
 
   componentDidMount() {
@@ -32,17 +38,12 @@ class Home extends Component {
 Home.serverSideFetch = () => {
     return [
         fetchPosts,
-        // other API calls needed
+        fetchAlbums
     ];
 };
 
-// map posts from redux store
-const mapStateToProps = state => ({
-  posts: state.posts.posts,
-  postsTotalCount: state.posts.totalCount
-});
+const mapStateToProps = state => ({});
 
-// map api call which can be conditionally triggered
 const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

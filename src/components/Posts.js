@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Waypoint} from 'react-waypoint';
 
+import {fetchPosts, removePostFromStore} from '../actions/postActions';
 import {getPostDetail} from '../actions/postActions';
-import {fetchPosts} from "../actions";
-import {Waypoint} from "react-waypoint";
+
 
 class Posts extends Component {
   constructor(props) {
@@ -31,6 +32,14 @@ class Posts extends Component {
         .then((res) => {
           console.log(`fetchPosts then `, res);
         });
+    } else {
+      const newState = {
+        posts: this.props.posts.slice(0, 10),
+        totalCount: this.props.postsTotalCount,
+        page: 1,
+        limit: 10
+      };
+      this.setState(newState);
     }
   }
 
@@ -67,7 +76,7 @@ class Posts extends Component {
   renderPost = (p, index) => {
     return (
       <div key={index} style={{padding: '10px'}}>
-        <Link to={`/${p.id}`} onClick={(e) => this.onClick(p)}>
+        <Link to={`/posts/${p.id}`} onClick={(e) => this.onClick(p)}>
           <p style={{margin: '0px'}} key={p.id}>{p.title}</p>
         </Link>
       </div>
@@ -92,13 +101,15 @@ class Posts extends Component {
     // console.log('left');
   };
 
-  onClick = (post) => {
-    this.props.getPostDetail(post);
-  }
+  onClick = (p) => {
+    this.props.getPostDetail(p);
+  };
 }
 
+// map posts from redux store
 const mapStateToProps = state => ({
-  posts: state.posts.posts
+  posts: state.posts.posts,
+  postsTotalCount: state.posts.totalCount
 });
 
 // map api call which can be conditionally triggered
