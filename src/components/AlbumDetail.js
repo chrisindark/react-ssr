@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 
 import {fetchAlbum, removeAlbumFromStore} from '../actions/albumActions';
 import {fetchPhotosByAlbumId, removePhotosFromStore} from '../actions/photoActions';
+import Photos from './Photos';
 
 
 class AlbumDetail extends Component {
@@ -57,29 +58,11 @@ class AlbumDetail extends Component {
   }
 
   renderPhotos = () => {
-    if (!this.props.photos && !this.props.photos.length) {
+    if (this.props.photos && this.props.photos.length) {
       return (
-        <div>
-          Loading...
-        </div>
+        <Photos photos={this.props.photos}/>
       )
     }
-
-    return (
-      <div>
-        <p>Photos:</p>
-        {this.props.photos.map((p, index) => this.renderPhoto(p, index))}
-      </div>
-    )
-  };
-
-  renderPhoto = (p, index) => {
-    return (
-      <div key={p.id} style={{padding: '10px'}}>
-        <p style={{margin: '0px'}}>{p.title}</p>
-        <img style={{margin: '0px'}} src={p.thumbnailUrl} alt={'thumbnailUrl'} />
-      </div>
-    )
   };
 
   componentWillUnmount() {

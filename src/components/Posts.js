@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Waypoint} from 'react-waypoint';
 
-import {fetchPosts, removePostFromStore} from '../actions/postActions';
+import {fetchPosts, removePostsFromStore} from '../actions/postActions';
 import {getPostDetail} from '../actions/postActions';
 
 
@@ -104,6 +104,10 @@ class Posts extends Component {
   onClick = (p) => {
     this.props.getPostDetail(p);
   };
+
+  componentWillUnmount() {
+    // this.removePostsFromStore();
+  }
 }
 
 // map posts from redux store
