@@ -110,6 +110,12 @@ class Posts extends Component {
   }
 }
 
+Posts.serverSideFetch = () => {
+    return [
+      fetchPosts
+    ];
+};
+
 // map posts from redux store
 const mapStateToProps = state => ({
   posts: state.posts.posts,

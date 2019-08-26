@@ -2,7 +2,7 @@ import Axios from 'axios';
 import store from '../store';
 
 
-export const fetchPosts = async () => {
+export const fetchPosts = async (ssrStore) => {
   // If the API call is triggered on the server,
   // call the API server directly. When triggered from
   // browser, our proxy in package.json will handle the
@@ -11,6 +11,7 @@ export const fetchPosts = async () => {
   const url = isServer
     ? 'http://jsonplaceholder.typicode.com/posts'
     : 'http://jsonplaceholder.typicode.com/posts';
+  const reduxStore = ssrStore ? ssrStore : store;
 
   console.log(`Getting posts on ${isServer ? 'server' : 'browser'}`);
 
@@ -24,7 +25,7 @@ export const fetchPosts = async () => {
         totalCount: res.data.length
       });
     }
-    return store.dispatch(updateAllPostsAction(payload));
+    return reduxStore.dispatch(updateAllPostsAction(payload));
   } catch (e) {
     console.log(`fetchPosts catch `, e);
   }
@@ -35,18 +36,24 @@ export const updateAllPostsAction = data => ({
   payload: data
 });
 
-export const fetchPost = async (id) => {
+export const fetchPost = async (ssrStore, match) => {
   const isServer = typeof window === 'undefined';
+  const id = match
+    ? match.params
+      ? match.params.id
+      : null
+    : null;
   const url = isServer
     ? `http://jsonplaceholder.typicode.com/posts/${id}`
     : `http://jsonplaceholder.typicode.com/posts/${id}`;
+  const reduxStore = ssrStore ? ssrStore : store;
 
   console.log(`Getting post on ${isServer ? 'server' : 'browser'}`);
 
   try {
     const res = await Axios.get(url);
     if (res.data) {
-      return store.dispatch(getPostDetail(res.data));
+      return reduxStore.dispatch(getPostDetail(res.data));
     }
   } catch (e) {
     console.log(`fetchPost catch `, e);

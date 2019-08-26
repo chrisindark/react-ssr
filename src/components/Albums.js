@@ -101,6 +101,12 @@ class Albums extends Component {
   };
 }
 
+Albums.serverSideFetch = () => {
+  return [
+    fetchAlbums
+  ];
+};
+
 const mapStateToProps = state => ({
   albums: state.albums.albums,
   albumsTotalCount: state.albums.totalCount

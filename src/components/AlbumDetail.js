@@ -10,7 +10,7 @@ import Photos from './Photos';
 
 class AlbumDetail extends Component {
   componentDidMount() {
-    if (this.props.albums && this.props.album.id) {
+    if (this.props.album && this.props.album.id) {
       fetchPhotosByAlbumId(this.props.album.id)
         .then((res) => {
           console.log(`fetchPhotosByAlbumId then `, res);
@@ -18,7 +18,7 @@ class AlbumDetail extends Component {
     } else {
       // console.log(this.props.match);
       if (this.props.match.params && this.props.match.params.id) {
-        fetchAlbum(this.props.match.params.id)
+        fetchAlbum(null, this.props.match)
           .then((res) => {
             console.log(`fetchAlbum then `, res);
 
@@ -70,6 +70,12 @@ class AlbumDetail extends Component {
     removePhotosFromStore();
   }
 }
+
+AlbumDetail.serverSideFetch = () => {
+    return [
+      fetchAlbum
+    ];
+};
 
 const mapStateToProps = state => ({
   album: state.albums.album,

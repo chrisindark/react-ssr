@@ -17,7 +17,7 @@ class PostDetail extends Component {
     } else {
       // console.log(this.props.match);
       if (this.props.match.params && this.props.match.params.id) {
-        fetchPost(this.props.match.params.id)
+        fetchPost(null, this.props.match)
           .then((res) => {
             console.log(`fetchPost then `, res);
 
@@ -89,6 +89,12 @@ class PostDetail extends Component {
     removeCommentsFromStore();
   }
 }
+
+PostDetail.serverSideFetch = () => {
+  return [
+    fetchPost
+  ];
+};
 
 const mapStateToProps = state => ({
   post: state.posts.post,

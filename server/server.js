@@ -1,12 +1,15 @@
-import React from 'react';
 import express from 'express';
+
+import React from 'react';
 import { StaticRouter, matchPath } from 'react-router';
 import { Provider as ReduxProvider } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
+import { createStore } from 'redux';
 
 import App from '../src/App';
-import store from '../src/store';
+// import store from '../src/store';
 import routes from '../src/routes';
+import {reducer} from '../src/reducers';
 
 const path = require('path');
 const fs = require('fs');
@@ -41,19 +44,21 @@ router.use('*', (req, res) => {
         }
 
         const context = {};
+        let REDUX_DATA = {};
         // empty promise array
         let dataPromise = [];
 
+        // Create a new Redux store instance
+        const store = createStore(reducer);
+
         // extract route which matches request
-        const route = routes.filter(r =>
-            matchPath(req.baseUrl, {
-                path: r.path,
-                exact: true
-            })
-        );
+        const route = routes.find(r => matchPath(req.baseUrl, r));
+        const match = matchPath(req.baseUrl, route);
 
         // extract component based on route
-        const component = route.length ? route[0].component : null;
+        const component = route
+            ? route.component
+            : null;
 
         // if action are available
         if (component && typeof component.serverSideFetch === 'function') {
@@ -64,15 +69,15 @@ router.use('*', (req, res) => {
 
             // dispatch and store promises
             dataPromise = actions.map(action => {
-                return action();
+                return action(store, match);
             });
         }
 
         // once promises resolved, render template using new store
         Promise.all(dataPromise).then(() => {
-            console.log(
-                `Rendering ${req.baseUrl} at ${new Date().toString()} on server`
-            );
+            REDUX_DATA = store.getState();
+            console.log(`Redux data : ${JSON.stringify(REDUX_DATA)}`);
+            console.log(`Rendering ${req.baseUrl} at ${new Date().toString()} on server`);
 
             const html = ReactDOMServer.renderToString(
                 <ReduxProvider store={store}>
@@ -90,7 +95,7 @@ router.use('*', (req, res) => {
                         '<script id="redux-state"></script>',
                         // add the current store state to be used to initializing browser state
                         `<script>window.REDUX_DATA = ${JSON.stringify(
-                            store.getState()
+                          REDUX_DATA
                         )}</script>`
                     )
             );
