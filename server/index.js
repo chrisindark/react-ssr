@@ -10,8 +10,14 @@ var store=(0,_redux.createStore)(_reducers.reducer);// extract route which match
 var route=_routes.default.find(function(r){return(0,_reactRouter.matchPath)(req.baseUrl,r);});var match=(0,_reactRouter.matchPath)(req.baseUrl,route);// extract component based on route
 var component=route?route.component:null;// if action are available
 if(component&&typeof component.serverSideFetch==='function'){console.log("Found actions to dispatch for ".concat(req.url));// get actions
-var actions=component.serverSideFetch();// dispatch and store promises
-dataPromise=actions.map(function(action){return action(store,match);});}// once promises resolved, render template using new store
-Promise.all(dataPromise).then(function(){REDUX_DATA=store.getState();console.log("Redux data : ".concat(JSON.stringify(REDUX_DATA)));console.log("Rendering ".concat(req.baseUrl," at ").concat(new Date().toString()," on server"));var html=_server.default.renderToString(_react.default.createElement(_reactRedux.Provider,{store:store},_react.default.createElement(_reactRouter.StaticRouter,{location:req.baseUrl,context:context},_react.default.createElement(_App.default,null))));return res.send(// render the template
+// const actions = component.serverSideFetch();
+// dispatch and store promises
+// dataPromise = actions.map(action => {
+//     return action(store, match);
+// });
+}// once promises resolved, render template using new store
+// Promise.all(dataPromise).then(() => {
+REDUX_DATA=store.getState();console.log("Redux data : ".concat(JSON.stringify(REDUX_DATA)));console.log("Rendering ".concat(req.baseUrl," at ").concat(new Date().toString()," on server"));var html=_server.default.renderToString(_react.default.createElement(_reactRedux.Provider,{store:store},_react.default.createElement(_reactRouter.StaticRouter,{location:req.baseUrl,context:context},_react.default.createElement(_App.default,null))));return res.send(// render the template
 htmlData.replace('<div id="root"></div>',"<div id=\"root\">".concat(html,"</div>")).replace('<script id="redux-state"></script>',// add the current store state to be used to initializing browser state
-"<script>window.REDUX_DATA = ".concat(JSON.stringify(REDUX_DATA),"</script>")));});});});app.use(router);app.listen(PORT,function(){console.log('listening on '+PORT+'...');});
+"<script>window.REDUX_DATA = ".concat(JSON.stringify(REDUX_DATA),"</script>")));// });
+});});app.use(router);app.listen(PORT,function(){console.log('listening on '+PORT+'...');});
